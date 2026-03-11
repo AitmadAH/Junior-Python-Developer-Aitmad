@@ -1,37 +1,64 @@
 import random
+from colorama import Fore, init
+from tabulate import tabulate
+
+init(autoreset=True)
+
+wins = {
+    "rock": "scissors",
+    "paper": "rock",
+    "scissors": "paper"
+}
+
+user_score = 0
+computer_score = 0
+rounds = 0
+
 
 def get_user_choice():
-    choice = input("Enter rock, paper, or scissors: ").lower()
-    return choice
+    while True:
+        choice = input(Fore.WHITE + "Choose 🪨 rock, 📄 paper, ✂️  scissors or ❌ q to quit: ").strip().lower()
+
+        if choice in ["rock", "paper", "scissors", "q"]:
+            return choice
+        else:
+            print(Fore.RED + "⚠️ Invalid input! Please type rock, paper, or scissors.")
 
 
-def get_computer_choice():
-    options = ["rock", "paper", "scissors"]
-    return random.choice(options)
+print(Fore.LIGHTCYAN_EX + "🎮 ROCK PAPER SCISSORS GAME 🎮")
 
+while True:
 
-def determine_winner(user, computer):
-    if user == computer:
-        return "It's a Tie!"
+    user_choice = get_user_choice()
 
-    elif (user == "rock" and computer == "scissors") or \
-         (user == "paper" and computer == "rock") or \
-         (user == "scissors" and computer == "paper"):
-        return "You Win!"
+    if user_choice == "q":
+        break
+
+    computer_choice = random.choice(["rock", "paper", "scissors"])
+
+    print(Fore.LIGHTBLUE_EX + f"👤 You chose: {user_choice}")
+    print(Fore.LIGHTMAGENTA_EX + f"💻 Computer chose: {computer_choice}")
+
+    if user_choice == computer_choice:
+        print(Fore.YELLOW + "🤝 It's a Tie!")
+
+    elif wins[user_choice] == computer_choice:
+        print(Fore.GREEN + "🏆 You Win this round!")
+        user_score += 1
 
     else:
-        return "Computer Wins!"
+        print(Fore.RED + "🤖 Computer Wins this round!")
+        computer_score += 1
 
+    rounds += 1
 
-def main():
-    user_choice = get_user_choice()
-    computer_choice = get_computer_choice()
+    table = [
+        ["👤 Player", user_score],
+        ["🤖 Computer", computer_score],
+        ["🎯 Rounds Played", rounds]
+    ]
 
-    print(f"You chose: {user_choice}")
-    print(f"Computer chose: {computer_choice}")
+    print("📊 Scoreboard")
+    print(tabulate(table, headers=["Name", "Score"], tablefmt="fancy_grid"))
 
-    result = determine_winner(user_choice, computer_choice)
-    print(result)
-
-
-main()
+print(Fore.CYAN + "👋 Game Over! Thanks for playing!")
